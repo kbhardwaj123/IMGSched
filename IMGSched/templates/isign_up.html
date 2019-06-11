@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}
+Sign Up
+{% endblock %}
+{% block content %}
+    <!-- {% if code %}
+        <p>Create Admin</p>
+    {% else %}
+        <p>User Sign Up</p>
+        {% endif %} -->
+    <p>Sign Up as User<a href="{% url 'signup' %}">Sign Up</a></p>
+    <fieldset>
+        <legend>Create Admin</legend>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div>
+                <button type="submit">Sign Up</button>
+            </div>
+        </form>
+    
+    </fieldset>
+
+{% endblock %}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<head>
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="header">
+        <div id="header1">IMGSched</div>
+        <div id="header2">
+            <table>
+                <tr>
+                    <td><a href="{% url 'home' %}">Home</a></td>
+                    <td><a href="{% url 'planner' %}">Create Event</a></td>
+                    <td><a href="{% url 'schedule' %}">Schedule</a></td>
+                </tr>
+            </table>
+        </div>
+        {% if user.is_authenticated %}
+            <div class="header32"><a href="{% url 'logout' %}">Log Out</a></div>
+        {% else %}
+            <div class="header3">
+                <a href="{% url 'isignup' %}" class="sign_up_link">Sign Up</a>
+                <a href="{% url 'login' %}" class="log_in_link">Log In</a>
+            </div>
+        {% endif %}
+        
+    </div>
+    <div class="dummy"></div>
+    <div class="mover">
+        <div class="mover1">Contact Us:</div>
+        <div class="mover2">
+            <table>
+                <tr>
+                    <td><img src="{% static 'images/fb.png' %}" alt="" height="50" width="50"></td>
+                    <td><img src="{% static 'images/tw.png' %}" alt="" height="50" width="50"></td>
+                    <td><img src="{% static 'images/insta.png' %}" alt="" height="50" width="50"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
+    <div class="content_block">
+            {% block content %}
+            {% endblock %}
+    </div>
+</body>
+</html>

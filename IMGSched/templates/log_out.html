@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}
+Log In
+{% endblock %}
+
+{% block content %}
+    <table>
+        <tr>
+            <td>
+                sign in again
+                <a href="{% url 'login' %}">Sign up</a>
+            </td>
+            <td>
+                Go to Home
+                <a href="{% url 'home' %}">Sign up</a>
+            </td>
+        </tr>
+    </table>
+{% endblock %}
