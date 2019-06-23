@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}
+Schedule Detail:
+{% endblock %}
+{% load staticfiles %}
+{% block javascript %}
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    
+{% endblock %}
+{% block content %}
+
+<div id="detail">
+        
+</div>
+<span>
+    Comments-
+</span>
+<div id="comments_display"></div>
+<div id="comments_form">
+        <!-- <fieldset>
+            <legend>Write Comment</legend>
+            <div>
+                <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div>
+                    <button type="submit">Post Comment</button>
+                </div>
+                </form>
+            </div>
+        </fieldset> -->
+</div>
+<script>
+    $(document).ready(function() {
+        $.ajax({
+            url: "/IMGSched/schedule2/{{ pk }}",
+            dataType: "json",
+            success: function(data) {
+                id = data.id;
+                name  = data.name;
+                date =  data.date;
+                venue = data.venue;
+                manager1 = data.manager;
+                user_name1 = manager1.user_name
+                username1 = user_name1.username
+                description = data.description;
+                string_2 = '<p> Name: ' + name + '</p><p> Date: ' + date + '</p><p> Venue: ' + venue + '</p><p> Manager: ' + username1 + '</p><p> Description: ' + description + '</p>';
+                a = document.getElementById("detail");
+                a.innerHTML = string_2; 
+                string_4  = '<fieldset><legend>Write Comment</legend><div><form action="/IMGSched/comments_poster/' + id + '/" method="post">{% csrf_token %}{{ form.as_p }}<div><button type="submit">Post Comment></button></div></form></div></fieldset>';
+                c = document.getElementById("comments_form");
+                c.innerHTML = string_4;
+            }
+        });
+        $.ajax({
+            url: "{% url 'comments' %}",
+            dataType: "json",
+            success:function(data) {
+                var string_3 = '';
+                for(var i=0; i<data.length; i++) {
+                    id = data[i].id;
+                    body = data[i].body;
+                    posted_by1 = data[i].posted_by;
+                    user_name1 = posted_by1.user_name
+                    username1 = user_name1.username
+                    event_name = data[i].event_name;
+                    posted_on = data[i].posted_on;
+                    string_3 = string_3 + '<div id="comments_info"><p id="c_by">' + username1 + '</p><p id="c_on">' + posted_on + '</p></div><div id="comments_body">' + body +'</div>';
+                }
+                a = document.getElementById("comments_display");
+                a.innerHTML  = string_3;
+            }
+        });
+    });
+</script>
+{% endblock %}

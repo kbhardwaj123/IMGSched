@@ -230,7 +230,7 @@ fieldset button:hover{
     align-items: center;
 }
 
-.content_block form>p>input{
+.content_block form>p>input,select{
     flex: 2 2 0%;
     background-color: #f2f2f2;
     border:2px solid #d9d9d9;
@@ -240,7 +240,7 @@ fieldset button:hover{
     transition: 1s;
 }
 
-.content_block form>p>input:hover{
+.content_block form>p>input:hover, select:hover{
     flex: 2 2 0%;
     background-color: #e6ffff;
     border:2px solid #d9d9d9;
@@ -249,7 +249,7 @@ fieldset button:hover{
     padding: 7px;
 }
 
-.content_block form>p>input:focus{
+.content_block form>p>input:focus, select:focus{
     flex: 2 2 0%;
     background-color: white;
     border:2px solid #80bfff;
@@ -282,4 +282,50 @@ fieldset button:hover{
     border: 1px solid #00e6e6;
     border-radius: 10px;
 }
+
+.content_block table {
+    width: 60%;
+    display: flex;
+    display: -webkit-flex;
+}
+
+.content_block a.bubble,a.bubble:hover{
+    flex:1 1 0%;
+    margin: 10px;
+    padding: 10px;
+    background: none;
+    border-radius: 0px;
+    border:none;
+
+}
+
+.content_block div.bubble_decor {
+    flex:1 1 0%;
+    margin: 15px;
+    padding: 15px;
+    color: white;
+    background: #333a56;
+    transition: 1s;
+    border-radius: 5px;
+    border: 2px solid #52658f;
+}
+
+.content_block div.bubble_decor:hover{
+    background: #52658f;
+    border: px solid #333a56;
+}
+
+.content_block div#detail {
+    width: 80%;
+    margin: 15px;
+    padding: 15px;
+    color: white;
+    background: #333a56;
+    transition: 1s;
+    border-radius: 5px;
+    border: 2px solid #52658f;
+}
+
+
+
 

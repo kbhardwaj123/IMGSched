@@ -8,7 +8,7 @@ Create Event
         <fieldset>
             <legend>Create Event</legend>
             <div>
-                <form method="post">
+                <form action="{% url 'schedule2' %}" method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <div>

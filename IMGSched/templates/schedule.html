@@ -2,6 +2,36 @@
 {% block title %}
 Schedule:
 {% endblock %}
+{% load staticfiles %}
+{% block javascript %}
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <!-- <script src="{% static 'js/loading.js' %}"></script> -->
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url : "{% url 'schedule2' %}",
+                dataType : "json",
+                success : function(data) {
+                    var string_1="";
+                    for(var i=0; i<data.length; i++) {
+                        id = data[i].id;
+                        name  = data[i].name;
+                        date =  data[i].date;
+                        venue = data[i].venue;
+                        manager1 = data[i].manager;
+                        user_name1 = manager1.user_name
+                        username1 = user_name1.username
+                        description = data[i].description;
+                        string_1 = string_1 + '<tr><a class="bubble" href="/IMGSched/schedule/' + id + '"><div class="bubble_decor"><p> Name: ' + name + '</p><p> Date: ' + date + '</p><p> Venue: ' + venue + '</p><p> Manager: ' + username1 + '</p><p> Description: ' + description + '</p></div></a></tr>';
+                    }
+                    document.getElementById("jsonresp").innerHTML = string_1;
+                }
+            });
+        });
+    </script>
+{% endblock %}
 {% block content %}
-under construction!!!
+    <table id="jsonresp">
+
+    </table>
 {% endblock %}

@@ -1,5 +1,6 @@
 from django import forms 
 from django.contrib.auth.models import User
+from .models import Event,Comments
 from django.contrib.auth.forms import UserCreationForm
 
 class UserRegistrationForm(forms.Form):
@@ -10,14 +11,28 @@ class UserRegistrationForm(forms.Form):
         model = User
         fields = ['username', 'email', 'enroll', 'password1', 'password2', ]
 
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
+class EventForm(forms.ModelForm):
+    # name = forms.CharField(label='Event Name',max_length=100)
+    # date = forms.DateField()
+    # venue = forms.CharField(label='Venue', max_length=100)
+    # manager = forms.CharField(label='Manager', max_length=100)
+    # description = forms.CharField(label='Description', max_length=255)
+    class Meta:
+        model = Event
+        fields  = "__all__"
+        widgets = {
+            'date': DateInput(),
+        }
 
 
-class EventForm(forms.Form):
-    name = forms.CharField(label='Event Name',max_length=100)
-    date = forms.DateField()
-    venue = forms.CharField(label='Venue', max_length=100)
-    manager = forms.CharField(label='Manager', max_length=100)
-    description = forms.CharField(label='Description', max_length=255)
+class CommentsForm(forms.ModelForm):
+    class Meta:
+        model = Comments
+        fields = ['body',]
+        
 
 
 class WannaBeAdminForm(forms.Form):

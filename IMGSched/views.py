@@ -1,10 +1,13 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib import messages
-from .forms import UserRegistrationForm,EventForm,WannaBeAdminForm
+from .forms import UserRegistrationForm,EventForm,WannaBeAdminForm,CommentsForm
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
-from .models import People,Event
+from .models import People,Event,Comments
 from django.contrib.auth.models import User
+from rest_framework import generics
+from .serializers import PeopleSerializer,EventSerializer,CommentsSerializer
+from datetime import datetime
 
 
 p_arr = ('iwanttobeadmin123','passpass123','hereistheadmin123',)
@@ -67,6 +70,51 @@ def isignup(request):
     else:
         form = WannaBeAdminForm()
         return render(request, 'isign_up.html', {'form': form})
+
+def schedule_detail(request, pk):
+    form = CommentsForm()
+    return render(request, 'schedule_detail.html', {'pk': pk, 'form': form})
+
+
+class ListEvent(generics.ListCreateAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+
+class DetailEvent(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+        
+class ListPeople(generics.ListCreateAPIView):
+    queryset = People.objects.all()
+    serializer_class = PeopleSerializer
+
+class DetailPeople(generics.RetrieveUpdateDestroyAPIView):
+    queryset = People.objects.all()
+    serializer_class = PeopleSerializer
+
+class ListComments(generics.ListCreateAPIView):
+    queryset = Comments.objects.all()
+    serializer_class = CommentsSerializer
+
+def comments_poster(request, pk):
+    if request.method == 'POST':
+        form = CommentsForm(request.POST)
+        if form.is_valid():
+            body1 = form.cleaned_data.get('body')
+            event1 = Event.objects.get(id = pk)
+            user_object1 = request.user
+            date1 = datetime.now().date()
+            if user_object1.is_authenticated:
+                people_object1 = user_object1.people
+                c = Comments.objects.create(body = body1, posted_by = people_object1, event_name = event1, posted_on = date1)
+                c.save()
+                form = CommentsForm()
+                return render(request, 'schedule_detail.html', {'pk': pk, 'form': form})
+    else:
+        redirect('home')
+                
+
+
 
 
 

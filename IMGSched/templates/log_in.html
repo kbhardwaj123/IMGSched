@@ -18,7 +18,16 @@ Log In
         </div>
     </fieldset>
     <div>
+        login with Google:
+        <a href="{% url 'social:begin' 'google-oauth2' %}">Google+</a>
+    </div>
+    <div>
+        login with Github:
+        <a href="{% url 'social:begin' 'github' %}">Github</a>
+    </div>
+    <div>
         Don't have an account?
         <a href="{% url 'signup' %}">Sign up</a>
     </div>
+    
 {% endblock %}
