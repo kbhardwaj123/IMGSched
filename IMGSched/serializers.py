@@ -4,7 +4,8 @@ from .models import People,Event,Comments
 class PeopleSerializer(serializers.ModelSerializer):
     class Meta:
         model = People
-        fields = ('id', 'user_name' , 'enroll', 'email')
+        fields = '__all__'
+        depth = 2
 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:

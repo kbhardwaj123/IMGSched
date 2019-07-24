@@ -28,10 +28,11 @@ class EventForm(forms.ModelForm):
         }
 
 
-class CommentsForm(forms.ModelForm):
-    class Meta:
-        model = Comments
-        fields = ['body',]
+class CommentsForm(forms.Form):
+    body = forms.CharField(max_length=200)
+    eventID = forms.IntegerField()
+    username = forms.CharField(max_length=30)
+
         
 
 

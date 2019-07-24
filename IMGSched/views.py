@@ -2,18 +2,27 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib import messages
 from .forms import UserRegistrationForm,EventForm,WannaBeAdminForm,CommentsForm
 from django.contrib.auth.forms import UserCreationForm
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
 from .models import People,Event,Comments
 from django.contrib.auth.models import User
 from rest_framework import generics
+from rest_framework.permissions import AllowAny
+from rest_framework.decorators import api_view,permission_classes
 from .serializers import PeopleSerializer,EventSerializer,CommentsSerializer
 from datetime import datetime
+from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
+from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
+from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from rest_auth.registration.views import SocialLoginView
+from django.conf import settings
 
 
-p_arr = ('iwanttobeadmin123','passpass123','hereistheadmin123',)
+
+p_arr = ('iwanttobeadmin123','paspas','hereistheadmin123',)
 # Create your views here.
-def home(request):
-    return render(request, 'index.html')
 
 def planner(request):
     if request.method =='POST':
@@ -35,11 +44,11 @@ def schedule(request):
 def signup(request):
     
     try:
-        p = request.session['code']
+        p = request.sess237a06265bc5ea6ebda05732be38be2c
         if p in p_arr:
             code = True
         else:
-            code = False
+            code = False237a06265bc5ea6ebda05732be38be2c
         request.session['code']='0'
     except:
         code = False
@@ -112,13 +121,59 @@ def comments_poster(request, pk):
                 return render(request, 'schedule_detail.html', {'pk': pk, 'form': form})
     else:
         redirect('home')
-                
+
+
+@csrf_exempt
+def user_admin_creator(request):
+    if request.method == 'POST':
+        user_name = request.POST.get("username")
+        user_object = User.objects.get(username=user_name)
+        admin_pass = request.POST.get("admin_password")
+        if admin_pass in p_arr:
+            code = True
+        else:
+            code = False
+        p = People(user_name=user_object, admin_value=code, enroll=request.POST.get("enroll"), email=request.POST.get("email"))
+        p.save()
+        message = "user created"
+        data = {
+            'message': message
+        }
+        return JsonResponse(data)
+
+@csrf_exempt
+def comment_creator(request):
+    if request.method == 'POST':
+            user_name = request.POST.get('username')
+            user_object = User.objects.get(username=user_name)
+            people_object = user_object.people
+            eventID = request.POST.get('eventID')
+            event_object = Event.objects.get(id = eventID)
+            date1 = datetime.now().date()
+            c = Comments.objects.create(body=request.POST.get('body'),posted_by = people_object, event_name = event_object, posted_on = date1)
+            c.save()
+            message = "comment created"
+            return JsonResponse({
+            'message': message
+            })
 
 
 
+class GithubLogin(SocialLoginView):
+    adapter_class = GitHubOAuth2Adapter
+    callback_url = "http://127.0.0.1:8000/IMGSched/oauth/complete/github/"
+    client_class = OAuth2Client
 
 
+class FacebookLogin(SocialLoginView):
+    adapter_class = FacebookOAuth2Adapter
+    client_class = OAuth2Client
 
 
+class GoogleLogin(SocialLoginView):
+    adapter_class = GoogleOAuth2Adapter
+    client_class = OAuth2Client
+    callback_url = "http://localhost:3000"
 
+    
 

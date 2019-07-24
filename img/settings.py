@@ -37,18 +37,35 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'IMGSched',
+    'corsheaders',
     'rest_framework',
+    'rest_framework.authtoken',
+    'rest_social_auth',
+    'rest_auth',
+    'rest_auth.registration',
     'social_django',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
+    'oauth2_provider',
+    'rest_framework_social_oauth2',
 ]
 
+SITE_ID = 1
+
 AUTHENTICATION_BACKENDS = [
-    'social_core.backends.google.GoogleOAuth2',
-    'social_core.backends.github.GithubOAuth2',
     'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+    'social_core.backends.google.GoogleOAuth2',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -56,6 +73,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
@@ -84,7 +102,7 @@ WSGI_APPLICATION = 'img.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
+# https://docs.djangoproject.com/en/2.2/ref/settings/#databases592584768306-fvesv7hlgldcqk49uuff6ne6jmi16oo8.apps.googleusercontent.com
 
 DATABASES = {
     'default': {
@@ -116,6 +134,26 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        'rest_framework_social_oauth2.authentication.SocialAuthentication'
+    ),
+}
+
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+# CORS_ORIGIN_WHITELIST = ('https://localhost:3000',)
+    
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -136,10 +174,16 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 Static_ROOT = os.path.join(BASE_DIR,'static')
-LOGIN_REDIRECT_URL = 'home'
+# LOGIN_REDIRECT_URL = 'home'
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '592584768306-fvesv7hlgldcqk49uuff6ne6jmi16oo8.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'QnVsmMRDee8IWcOXbuJLqLWx'
 
 SOCIAL_AUTH_GITHUB_KEY = 'b22c96a2cfb2c2ad0c7b'
 SOCIAL_AUTH_GITHUB_SECRET = 'c0ed589c86293edb1b1a68d045f1715681a3e4a8'
+
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
+ACCOUNT_EMAIL_REQUIRED = False
+
+REST_SESSION_LOGIN = False
