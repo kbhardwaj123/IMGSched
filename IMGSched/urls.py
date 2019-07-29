@@ -12,6 +12,7 @@ urlpatterns = [
     path('signout/', auth_views.LogoutView.as_view(template_name='log_out.html'), name='logout'),
     path('planner/',views.planner, name='planner'),
     path('schedule2/', views.ListEvent.as_view(), name='schedule2'),
+    path('schedule3/', views.schedule_creator),
     path('schedule2/<int:pk>/', views.DetailEvent.as_view()),
     path('schedule/', views.schedule, name='schedule'),
     path('schedule/<int:pk>/', views.schedule_detail),

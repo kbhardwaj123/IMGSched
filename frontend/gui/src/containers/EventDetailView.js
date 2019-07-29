@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import CommentList from '../components/Comments';
 import CommentForm from '../components/CommentCreationForm';
 
+let eventID
 
 class EventDetail extends React.Component {
     
@@ -20,7 +21,8 @@ class EventDetail extends React.Component {
                 "Content-Type": "application/json",
                 Authorization: `Token ${this.props.token}`
             }
-            const eventID = this.props.match.params.eventID;
+            eventID = this.props.match.params.eventID;
+            console.log(eventID);
             axios.get(`http://127.0.0.1:8000/IMGSched/schedule2/${eventID}/`)
                 .then(res => {
                     this.setState({
@@ -50,7 +52,13 @@ class EventDetail extends React.Component {
         }
     }
 
-    
+    deleteEvent() {
+        axios.delete(`http://127.0.0.1:8000/IMGSched/schedule2/${eventID}/`)
+            .then(res => {
+                console.log(res);
+            })
+    }
+
     render() {
         return(
             <div id="timeline_list2" >
@@ -58,7 +66,8 @@ class EventDetail extends React.Component {
                     this.state.events.map( c => (
                         <div key={c.id} className="timeline_list_child">   
                                 <div className="timeline_detail_div">
-                                    <div id="head_div"><h3>{c.name}</h3></div>
+                                    <div id="head_div"><span className="head_div_heading">{c.name}</span>
+                                    <span className="head_div_links"><button onClick={() => this.deleteEvent()}>Delete</button><Link to="/">Edit</Link></span></div>
                                     <p>{c.description}</p>
                                     <p>Venue: {c.venue} , Manager: {c.manager.user_name.username}</p>
                                     <p>Planned for: {c.date}</p>
@@ -66,6 +75,7 @@ class EventDetail extends React.Component {
                         <div id="comment"><CommentList eventID={c.id} /></div>
                         <CommentForm eventID={c.id} requestType={`POST`}/>
                         <div>{ `${this.props.username}` }</div>
+                        <div>{`${this.state.admin_value.is_admin}`}</div>
                         </div>
                     ))
                 } 

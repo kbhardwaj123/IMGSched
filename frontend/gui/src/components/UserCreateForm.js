@@ -20,23 +20,28 @@ class UserCreationForm extends React.Component {
     
     componentWillReceiveProps(newProps) {
         console.log("props have changed");
-        console.log(newProps.token);
         const data = {
             username: this.inputUsername.current.value,
             email: this.inputEmail.current.value,
             admin_password: "random",
             enroll: this.inputEnroll.current.value
         }
-        axios.defaults.headers = {
+        console.log(data);
+        const config = {
             'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
             Authorization: `Token ${newProps.token}`
         }
-        console.log(`${this.inputUsername.current.value}`);
-        axios.post(`http://127.0.0.1:8000/IMGSched/creator/`,qs.stringify(data))
-        .then(res => console.log(res))
+        if(newProps.token) {
+            axios.post(`http://127.0.0.1:8000/IMGSched/creator/`,qs.stringify(data),config)
+                .then(res => console.log(res))
+                .catch(err => console.log(err))
+        }
+
+        // axios.post(`http://127.0.0.1:8000/IMGSched/creator/`,qs.stringify(data))
+        // .then(res => console.log(res))
     }
 
-    handleFormSubmit = (event, requestType) => {
+    handleFormSubmit = (event) => {
         event.preventDefault();
         const username1 = this.inputUsername.current.value;
         const email1 = this.inputEmail.current.value;
@@ -46,7 +51,6 @@ class UserCreationForm extends React.Component {
             this.props.onAuth(username1, email1, password1, confirm_password1);
         }
         }
-        
         // switch(requestType) {
         //     case 'post':
         //         return axios.post('http://127.0.0.1:8000/',{
@@ -95,7 +99,7 @@ class UserCreationForm extends React.Component {
     render() {
         return(
             <fieldset>
-                <Form onSubmit={(event) => this.handleFormSubmit(event,this.props.requestType)}>
+                <Form onSubmit={(event) => this.handleFormSubmit(event)}>
                     
                     <Form.Group controlId="formBasicUsername">
                         <Form.Label>Username</Form.Label>

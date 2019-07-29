@@ -48,6 +48,8 @@ body{
 #header1{
     flex:1 1 0%;
     display: flex;
+    font-size: 1.5em;
+    font-weight: bold;
     display: -webkit-flex;
     align-items: center;
     justify-content: center;
@@ -460,8 +462,30 @@ legend {
 
 #head_div {
     margin: 0px;
+    display: flex;
+    display: -webkit-flex;
     padding-left: 17px;
     background-image: linear-gradient(rgb(204, 204, 204), white, rgb(204, 204, 204))
+}
+
+.head_div_heading {
+    flex: 3;
+    display: flex;
+    display: -webkit-flex;
+    align-items: center;
+    font-size: 1.17em;
+    padding: 10px;
+    font-weight: bold;
+}
+
+.head_div_links {
+    display: flex;
+    display: -webkit-flex;
+    flex: 1 end;
+}
+
+.head_div_links a {
+    flex: none;
 }
 
 .timeline_detail_div p {

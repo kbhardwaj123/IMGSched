@@ -2,6 +2,9 @@ import React from 'react';
 import { Form, Button} from 'react-bootstrap';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import qs from 'qs';
+
+
 
 class EventForm extends React.Component {
     constructor() {
@@ -14,7 +17,7 @@ class EventForm extends React.Component {
     }
 
     state = {
-        managers: []
+        managers: [],
     }
 
     componentDidMount() {
@@ -27,57 +30,48 @@ class EventForm extends React.Component {
             this.setState({
                 managers: res.data
             });
-            console.log(res.data)
+            console.log(res.data);
+            console.log(this.props.token);
         })
     }
 
-    handleFormSubmit = (event, requestType, eventID) => {
+    handleFormSubmit = (event) => {
+        console.log("creating event");
         event.preventDefault();
         const name1 = this.inputName.current.value;
         const date1 = this.inputDate.current.value;
         const venue1 = this.inputVenue.current.value;
-        const manager1 = this.inputManager.current.value;
+        const manager1 = this.inputManager.value;
         const description1 = this.inputDescription.current.value;
-        switch(requestType) {
-            case 'post':
-                return axios.post('http://127.0.0.1:8000/IMGSched/schedule2/',{
-                    name: name1,
-                    date: date1,
-                    venue: venue1,
-                    manager: manager1,
-                    description:  description1
-                })
-                .then(res => console.log(res))
-                .catch(err => console.err(err))
-            case 'put':
-                return axios.put(`http://127.0.0.1:8000/IMGSched/schedule2/${eventID}`,{
-                    name: name1,
-                    date: date1,
-                    venue: venue1,
-                    manager: manager1,
-                    description:  description1
-            })
-            .then(res => console.log(res))
-            .catch(err => console.err(err))
+        const data = {
+            name: name1,
+            date: date1,
+            venue: venue1,
+            manager: manager1,
+            description:  description1
         }
+        console.log(manager1)
+        axios.post('http://127.0.0.1:8000/IMGSched/schedule3/',qs.stringify(data))
+            .then(res => console.log(res))
+            .catch(err => console.log(err))
     }
 
 
     render() {
         return(
-            <div>
+            <div style={{width: '100%',display: 'flex',justifyContent: 'center',}}>
                 {
                     this.props.isAuthenticated?
                     <fieldset>
                 <legend>Create Event</legend>
-                <Form onSubmit={(event) => this.handleFormSubmit(event,this.props.requestType,this.props.eventID)}>
+                <Form onSubmit={(event) => this.handleFormSubmit(event)}>
                 <Form.Group controlId="formBasicUsername">
                     <Form.Label>Name</Form.Label>
                     <Form.Control ref={this.inputName} type="text" placeholder="Enter event name" />
                 </Form.Group>
                 <Form.Group controlId="formBasicdate">
                     <Form.Label>Date</Form.Label>
-                    <Form.Control ref={this.inputDate} type="text" placeholder="date of event" />
+                    <Form.Control ref={this.inputDate} type="date" placeholder="date of event" />
                 </Form.Group>
                 <Form.Group controlId="formBasicVenue">
                     <Form.Label>Venue </Form.Label>
@@ -85,7 +79,7 @@ class EventForm extends React.Component {
                 </Form.Group>
                 <Form.Group controlId="formBasicManager">   
                     <Form.Label>Manager</Form.Label>
-                    <Form.Control as="select" ref={this.inputManager} >
+                    <Form.Control as="select" ref={select => this.inputManager=select} >
                     {
                         this.state.managers.map( c => (
                             <option value={c.id}>{c.user_name.username}</option>

@@ -126,9 +126,12 @@ def comments_poster(request, pk):
 @csrf_exempt
 def user_admin_creator(request):
     if request.method == 'POST':
-        user_name = request.POST.get("username")
+        user_name = request.POST.get('username')
+        admin_pass = request.POST.get('admin_password')
+        enroll=request.POST.get('enroll')
+        email=request.POST.get("email")
         user_object = User.objects.get(username=user_name)
-        admin_pass = request.POST.get("admin_password")
+        admin_pass = request.POST.get('admin_password')
         if admin_pass in p_arr:
             code = True
         else:
@@ -136,7 +139,12 @@ def user_admin_creator(request):
         p = People(user_name=user_object, admin_value=code, enroll=request.POST.get("enroll"), email=request.POST.get("email"))
         p.save()
         message = "user created"
-        data = {
+        data= {
+            'username' : user_name,
+            'pass': admin_pass,
+            'enroll':  enroll,
+            'email': email,
+            'user_id': user_object.id,
             'message': message
         }
         return JsonResponse(data)
@@ -157,6 +165,20 @@ def comment_creator(request):
             'message': message
             })
 
+@csrf_exempt
+def schedule_creator(request):
+    if request.method =='POST':
+        name = request.POST.get('name')
+        venue = request.POST.get('venue')
+        description = request.POST.get('description')
+        date = request.POST.get('date')
+        manager_id = request.POST.get('manager')
+        people_object = People.objects.get(id = manager_id)
+        eve = Event.objects.create(name=name,venue=venue,description=description,date=date,manager=people_object)
+        eve.save()
+        return JsonResponse({
+            'message': 'event created'
+        })
 
 
 class GithubLogin(SocialLoginView):
