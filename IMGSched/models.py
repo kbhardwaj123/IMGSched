@@ -34,3 +34,7 @@ class Comments(models.Model):
     posted_by = models.ForeignKey(People, on_delete=models.CASCADE)
     event_name = models.ForeignKey(Event, on_delete=models.CASCADE)
     posted_on = models.DateField()
+
+class Invites(models.Model):
+    event=models.ForeignKey(Event, on_delete=models.CASCADE)
+    user=models.OneToOneField(User,on_delete=models.CASCADE)

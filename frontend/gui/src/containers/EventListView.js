@@ -7,7 +7,8 @@ import { connect } from 'react-redux';
 class EventList extends React.Component {
     
     state = {
-        events: []
+        events: [],
+        invites: [],
     }
 
     componentDidMount() {
@@ -23,7 +24,12 @@ class EventList extends React.Component {
                         events: res.data
                     });
                 })
-
+            axios.get('http://127.0.0.1:8000/IMGSched/invites/')
+                .then(res => {
+                    this.setState({
+                        invites: res.data
+                    });
+                })
         }
     }
 

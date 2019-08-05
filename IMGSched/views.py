@@ -3,12 +3,12 @@ from django.contrib import messages
 from .forms import UserRegistrationForm,EventForm,WannaBeAdminForm,CommentsForm
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse,JsonResponse
-from .models import People,Event,Comments
+from .models import People,Event,Comments,Invites
 from django.contrib.auth.models import User
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view,permission_classes
-from .serializers import PeopleSerializer,EventSerializer,CommentsSerializer
+from .serializers import PeopleSerializer,EventSerializer,CommentsSerializer,InvitesSerializer,UserSerializer
 from datetime import datetime
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
@@ -105,6 +105,22 @@ class ListComments(generics.ListCreateAPIView):
     queryset = Comments.objects.all()
     serializer_class = CommentsSerializer
 
+class ListInvites(generics.ListCreateAPIView):
+    queryset = Invites.objects.all()
+    serializer_class = InvitesSerializer
+
+class DetailInvites(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Invites.objects.all()
+    serializer_class = InvitesSerializer
+    
+class ListUsers(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+class DetailUsers(generics.RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
 def comments_poster(request, pk):
     if request.method == 'POST':
         form = CommentsForm(request.POST)
@@ -178,6 +194,20 @@ def schedule_creator(request):
         eve.save()
         return JsonResponse({
             'message': 'event created'
+        })
+
+@csrf_exempt
+def invitation(request):
+    if request.method =='POST':
+        name1 = request.POST.get('name')
+        invites = request.POST.get('invites')
+        event_object = Event.objects.get(name=name1)
+        for x in invites:
+            user_object=User.objects.get(id=x.value)
+            inv = Invites.objects.create(event=event_object,user=user_object)
+            inv.save()
+            return JsonResponse({
+            'message': 'invite sent'
         })
 
 

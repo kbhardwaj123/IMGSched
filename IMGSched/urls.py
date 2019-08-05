@@ -18,6 +18,10 @@ urlpatterns = [
     path('schedule/<int:pk>/', views.schedule_detail),
     path('comments/', views.ListComments.as_view(), name='comments'),
     path('comments_poster/<int:pk>/', views.comments_poster),
+    path('invites/',views.ListInvites.as_view()),
+    path('invites/<int:pk>/',views.DetailInvites.as_view()),
+    path('users/',views.ListUsers.as_view()),
+    path('users/<int:pk>/',views.DetailUsers.as_view()),
     path('people2/', views.ListPeople.as_view()),
     path('oauth/', include('social_django.urls', namespace="social")),
     path('rest-auth/', include('rest_auth.urls')),
@@ -31,4 +35,5 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('rest-auth/google/', views.GoogleLogin.as_view()),
     path('api/login/', include('rest_social_auth.urls_token')),
+    path('invite_processor/',views.invitation),
 ]

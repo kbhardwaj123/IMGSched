@@ -1,8 +1,10 @@
 import React from 'react';
-import { Form, Button} from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import qs from 'qs';
+import Select from 'react-select';
+import ApiCalendar from 'react-google-calendar-api';
 
 
 
@@ -14,10 +16,15 @@ class EventForm extends React.Component {
         this.inputVenue = React.createRef();
         this.inputManager = React.createRef();
         this.inputDescription = React.createRef();
+        this.inputInvites = React.createRef();
     }
 
     state = {
         managers: [],
+        users: [],
+        options: [],
+        selectedOption: null,
+        test: [{value:1,label:'one'},{value:2,label:'two'}],
     }
 
     componentDidMount() {
@@ -33,6 +40,23 @@ class EventForm extends React.Component {
             console.log(res.data);
             console.log(this.props.token);
         })
+        axios.get('http://127.0.0.1:8000/IMGSched/users/')
+        .then(res => {
+            this.setState({
+                users: res.data
+            });
+            console.log(res.data);
+            const usr=res.data;
+            let tentative_options = [];
+            for(let i=0;i<usr.length;i++) {
+                tentative_options.push({value:usr[i].id,label:usr[i].username});
+            }
+            console.log(tentative_options);
+            this.setState({
+                options: tentative_options
+            })
+            console.log(this.state.options);
+        })
     }
 
     handleFormSubmit = (event) => {
@@ -43,6 +67,7 @@ class EventForm extends React.Component {
         const venue1 = this.inputVenue.current.value;
         const manager1 = this.inputManager.value;
         const description1 = this.inputDescription.current.value;
+        const invites1 = this.state.selectedOption;
         const data = {
             name: name1,
             date: date1,
@@ -50,14 +75,27 @@ class EventForm extends React.Component {
             manager: manager1,
             description:  description1
         }
-        console.log(manager1)
+        const data2 = {
+            name: name1,
+            invites: invites1
+        }
+        console.log(manager1);
+        console.log(invites1);
         axios.post('http://127.0.0.1:8000/IMGSched/schedule3/',qs.stringify(data))
+            .then(res => console.log(res))
+            .catch(err => console.log(err))
+        axios.post('',qs.stringify(data2))
             .then(res => console.log(res))
             .catch(err => console.log(err))
     }
 
+    selectChange = selectedOption => {
+        this.setState({selectedOption});
+        console.log(`Option selected:`, selectedOption);
+    }
 
     render() {
+        const { selectedOption } = this.state;
         return(
             <div style={{width: '100%',display: 'flex',justifyContent: 'center',}}>
                 {
@@ -91,6 +129,7 @@ class EventForm extends React.Component {
                     <Form.Label>Description</Form.Label>
                     <Form.Control ref={this.inputDescription} type="text" placeholder="enter brief description" />
                 </Form.Group>
+                <Select options={this.state.options} isMulti value={selectedOption} onChange={this.selectChange} />
                 <Button variant="primary" type="submit">
                     Create Event
                 </Button>
@@ -104,6 +143,7 @@ class EventForm extends React.Component {
             
         );
     }
+    
 }
 
 const mapStateToProps = state => {
